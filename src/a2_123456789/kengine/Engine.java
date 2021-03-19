@@ -208,7 +208,7 @@ public class Engine {
 		 }
 	  }
 	  catch (NullPointerException e) {
-		  System.out.print("NullPointerException Caught"); 
+		  throw e;
 	  }
 	  return this.q;
   }
