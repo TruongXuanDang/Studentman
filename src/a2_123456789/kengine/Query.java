@@ -242,4 +242,11 @@ public class Query {
     else
       return null;
   } 
+  
+  public Iterator matchIterator() {
+	    if (matches.isEmpty()) {
+	    	return null;
+	    }
+	    return matches.iterator();
+  } 
 }
