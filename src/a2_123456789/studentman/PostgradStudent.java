@@ -67,6 +67,23 @@ public class PostgradStudent extends Student {
 
 
 
+	public PostgradStudent(int id, String name, String phone, String address, int gpa) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.phone = phone;
+		this.address = address;
+		this.gpa = gpa;
+	}
+
+
+
+	public PostgradStudent() {
+		super();
+	}
+
+
+
 	@Override
 	public String toHtmlDoc() {
 		// TODO Auto-generated method stub
@@ -75,6 +92,14 @@ public class PostgradStudent extends Student {
           "<body>\n" + 
           this.id+ " " + this.name + " " + this.phone + " " + this.address + " " + this.gpa + 
           "</body>\n" + "</html>";
+	}
+
+
+
+	@Override
+	public int compareTo(Object o) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 }

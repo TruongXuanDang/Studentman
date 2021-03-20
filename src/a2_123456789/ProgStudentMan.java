@@ -1,12 +1,19 @@
 package a2_123456789;
 
 import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Scanner;
+import java.util.TreeSet;
 
 import a2_123456789.kengine.Doc;
 import a2_123456789.kengine.DocCnt;
+import a2_123456789.kengine.Engine;
 import a2_123456789.kengine.Query;
+import a2_123456789.studentman.PostgradStudent;
 import a2_123456789.studentman.Student;
+import a2_123456789.studentman.UndergradStudent;
+import utils.DomainConstraint;
 import utils.NotPossibleException;
 
 public class ProgStudentMan {
@@ -329,7 +336,10 @@ public class ProgStudentMan {
 	   * @effects 
 	   *   initialise this to include an empty set of objects and an empty engine
 	   */
-	  public ProgStudentMan()
+	  public ProgStudentMan() {
+			this.engine = new Engine();
+			this.objects = new TreeSet<Student>();
+	  }
 	  
 	  /**
 	   * @effects
@@ -339,7 +349,18 @@ public class ProgStudentMan {
 	   *     return a string containing each object in this.objects one per line
 	   */
 	  @Override
-	  public String toString()
+	  public String toString() {
+		  if(objects.isEmpty()) {
+			  return "empty";
+		  }
+		  else {
+			  String result = "";
+			  for (Student student: objects){
+				  result += student.toHtmlDoc();
+			  }
+			  return result;
+		  }
+	  }
 
 	  /**
 	   * @effects 
@@ -348,7 +369,14 @@ public class ProgStudentMan {
 	   *  else
 	   *    return false
 	   */
-	  public boolean isEmpty()
+	  public boolean isEmpty() {
+		  if(objects.isEmpty()) {
+			  return true;
+		  }
+		  else {
+			  return false;
+		  }
+	  }
 	  
 	  /**
 	   * @requires 
@@ -359,7 +387,20 @@ public class ProgStudentMan {
 	   *  else
 	   *    throws NotPossibleException 
 	   */
-	  public Student createStudent(Object[] data)
+	  public Student createStudent(Object[] data) {
+		  Student student = new Student();
+		  try {
+			  int id = Integer.parseInt(data[0].toString()) ;
+			  String name = data[1].toString();
+			  String phone = data[2].toString();
+			  String address = data[3].toString();
+			  student = new Student (id, name, phone, address);
+		  }
+		  catch (NotPossibleException e){
+			throw e;  
+		  }
+		  return student;
+	  }
 	  
 	  /**
 	   * @requires 
@@ -370,7 +411,21 @@ public class ProgStudentMan {
 	   *  else
 	   *    throws NotPossibleException 
 	   */
-	  public UndergradStudent createUndergradStudent(Object[] data) throws NotPossibleException
+	  public UndergradStudent createUndergradStudent(Object[] data) {
+		  UndergradStudent undergradStudent = new UndergradStudent();
+		  try {
+			  int id = Integer.parseInt(data[0].toString()) ;
+			  String name = data[1].toString();
+			  String phone = data[2].toString();
+			  String address = data[3].toString();
+			  undergradStudent = new UndergradStudent (id, name, phone, address);
+		  }
+		  catch (NotPossibleException e){
+			throw e;  
+		  }
+		  return undergradStudent;
+	  }
+			  
 	  
 	  /**
 	   * @requires 
@@ -381,14 +436,31 @@ public class ProgStudentMan {
 	   *  else
 	   *    throws NotPossibleException 
 	   */
-	  public PostgradStudent createPostgradStudent(Object[] data) throws NotPossibleException
+	  public PostgradStudent createPostgradStudent(Object[] data) {
+		  PostgradStudent postgradStudent = new PostgradStudent();
+		  try {
+			  int id = Integer.parseInt(data[0].toString()) ;
+			  String name = data[1].toString();
+			  String phone = data[2].toString();
+			  String address = data[3].toString();
+			  int gpa = Integer.parseInt(data[4].toString());
+			  postgradStudent = new PostgradStudent (id, name, phone, address, gpa);
+		  }
+		  catch (NotPossibleException e){
+			throw e;  
+		  }
+		  return postgradStudent;
+	  }
 	  
 	  /**
 	   * @effects 
 	   *   add c to this.objects and 
 	   *   add to this.engine a Doc object created from c.toHtmlDoc
 	   */
-	  public void addStudent(Student c)
+	  public void addStudent(Student c) {
+		  this.objects.add(c);
+		  this.engine.addDocs(c.toHtmlDoc());
+	  }
 	  
 	  /**
 	   * @requires words != null /\ words.length > 0
@@ -399,5 +471,38 @@ public class ProgStudentMan {
 	   *   If fails to execute query using words
 	   *     throws NotPossibleException
 	   */
-	  public Query search(String[] words) throws NotPossibleException
+	  public Query search(String[] words) {
+		  Query query = new Query();
+		  
+		  if(words != null && words.length > 0) {
+			  try {
+				  Iterator<Student> studentIterator = this.objects.iterator();
+				  
+				  while(studentIterator.hasNext()) {
+//					  objectToAdd
+					  Student student = studentIterator.next();
+					  String objectHtmlDoc = student.toHtmlDoc();
+					  Doc objectToAdd = new Doc(objectHtmlDoc);
+	
+//					  maps
+					  Hashtable maps = new Hashtable();
+					  Iterator<String> wordsOfObjectDoc = objectToAdd.words();
+					  while(studentIterator.hasNext()) {
+						  String wordOfObjectDoc = wordsOfObjectDoc.next();
+						  maps.put(wordOfObjectDoc, 1);
+					  }
+		
+//					  addDoc
+					  query.addDoc(objectToAdd, maps);
+					  
+					  for(String word: words){
+						  query.addKey(word);
+					  }
+				  }
+			  } catch (NotPossibleException e) {
+				  throw e;  
+			  }
+		  }
+		  return query;
+	  }
 }

@@ -54,6 +54,23 @@ public class UndergradStudent extends Student {
 	}
 
 	
+	
+	public UndergradStudent(int id, String name, String phone, String address) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.phone = phone;
+		this.address = address;
+	}
+
+
+
+	public UndergradStudent() {
+		super();
+	}
+
+
+
 	@Override
 	public String toHtmlDoc() {
 		// TODO Auto-generated method stub
@@ -62,6 +79,14 @@ public class UndergradStudent extends Student {
 		          "<body>\n" + 
 		          this.id+ " " + this.name + " " + this.phone + " " + this.address + 
 		          "</body>\n" + "</html>";
+	}
+
+
+
+	@Override
+	public int compareTo(Object o) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 }
